@@ -26,6 +26,7 @@ class _ProfileFormState extends State<ProfileForm> {
   late final TextEditingController _community;
   late final TextEditingController _bio;
   bool _saving = false;
+  late bool _editing;
 
   @override
   void initState() {
@@ -34,17 +35,27 @@ class _ProfileFormState extends State<ProfileForm> {
     _role = TextEditingController(text: widget.profile?.role);
     _community = TextEditingController(text: widget.profile?.community);
     _bio = TextEditingController(text: widget.profile?.bio);
+    _editing = widget.profile == null;
   }
 
   @override
   void didUpdateWidget(covariant ProfileForm oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.profile == null && widget.profile != null) {
-      _name.text = widget.profile!.name;
-      _role.text = widget.profile!.role;
-      _community.text = widget.profile!.community;
-      _bio.text = widget.profile!.bio;
+    final profile = widget.profile;
+    final profileChanged = oldWidget.profile != profile;
+    if (profile != null &&
+        profileChanged &&
+        (!_editing || oldWidget.profile == null)) {
+      _syncControllers(profile);
+      _editing = false;
     }
+  }
+
+  void _syncControllers(Profile profile) {
+    _name.text = profile.name;
+    _role.text = profile.role;
+    _community.text = profile.community;
+    _bio.text = profile.bio;
   }
 
   @override
@@ -58,6 +69,7 @@ class _ProfileFormState extends State<ProfileForm> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() => _saving = true);
     try {
       await widget.onSave(
@@ -72,6 +84,7 @@ class _ProfileFormState extends State<ProfileForm> {
         ),
       );
       if (!mounted) return;
+      setState(() => _editing = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Your node profile is synced.')),
       );
@@ -84,6 +97,11 @@ class _ProfileFormState extends State<ProfileForm> {
     }
   }
 
+  void _enableEditing() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _editing = true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -94,15 +112,47 @@ class _ProfileFormState extends State<ProfileForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('MY SPACE', style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 8),
-              Text(
-                'Build your identity',
-                style: Theme.of(context).textTheme.headlineSmall,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'MY SPACE',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _editing ? 'Build your identity' : 'Profile saved',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        if (!_editing) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Use the pencil to edit your profile.',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  if (!_editing)
+                    IconButton.filledTonal(
+                      key: const Key('profile-edit-button'),
+                      tooltip: 'Edit profile',
+                      onPressed: _enableEditing,
+                      icon: const Icon(Icons.edit_rounded),
+                    ),
+                ],
               ),
               const SizedBox(height: 20),
               TextFormField(
+                key: const Key('profile-name-field'),
                 controller: _name,
+                readOnly: !_editing,
+                enabled: !_saving,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   labelText: 'Name',
@@ -113,7 +163,10 @@ class _ProfileFormState extends State<ProfileForm> {
               ),
               const SizedBox(height: 14),
               TextFormField(
+                key: const Key('profile-role-field'),
                 controller: _role,
+                readOnly: !_editing,
+                enabled: !_saving,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   labelText: 'Role',
@@ -124,7 +177,10 @@ class _ProfileFormState extends State<ProfileForm> {
               ),
               const SizedBox(height: 14),
               TextFormField(
+                key: const Key('profile-community-field'),
                 controller: _community,
+                readOnly: !_editing,
+                enabled: !_saving,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
                   labelText: 'Community',
@@ -135,7 +191,10 @@ class _ProfileFormState extends State<ProfileForm> {
               ),
               const SizedBox(height: 14),
               TextFormField(
+                key: const Key('profile-bio-field'),
                 controller: _bio,
+                readOnly: !_editing,
+                enabled: !_saving,
                 maxLength: 240,
                 minLines: 2,
                 maxLines: 4,
@@ -148,15 +207,23 @@ class _ProfileFormState extends State<ProfileForm> {
                     FieldValidators.optionalText(value, label: 'Bio'),
               ),
               const SizedBox(height: 8),
-              FilledButton.icon(
-                onPressed: _saving ? null : _save,
-                icon: _saving
-                    ? const SizedBox.square(
-                        dimension: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: _editing
+                    ? FilledButton.icon(
+                        key: const Key('profile-save-button'),
+                        onPressed: _saving ? null : _save,
+                        icon: _saving
+                            ? const SizedBox.square(
+                                dimension: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.cloud_upload_outlined),
+                        label: Text(_saving ? 'Saving...' : 'Save profile'),
                       )
-                    : const Icon(Icons.cloud_upload_outlined),
-                label: Text(_saving ? 'Saving...' : 'Save profile'),
+                    : const SizedBox.shrink(),
               ),
             ],
           ),

@@ -13,12 +13,9 @@ abstract final class CommunityFirebaseOptions {
         'Register com.example.full_day_community_node as an Android app in '
         'the Hub project, then add its options to CommunityFirebaseOptions.',
       ),
-      TargetPlatform.iOS => throw UnsupportedError(
-        'Register com.example.fullDayCommunityNode as an iOS app in the Hub '
-        'project, then add its options to CommunityFirebaseOptions.',
-      ),
+      TargetPlatform.iOS => ios,
       _ => throw UnsupportedError(
-        'The Community Hub is configured for Web, Android, and iOS.',
+        'The Community Hub is configured for Web and iOS.',
       ),
     };
   }
@@ -31,5 +28,15 @@ abstract final class CommunityFirebaseOptions {
     authDomain: 'full-day-comunnity-hub.firebaseapp.com',
     storageBucket: 'full-day-comunnity-hub.firebasestorage.app',
     measurementId: 'G-Z63QH9XPV0',
+  );
+
+  static const ios = FirebaseOptions(
+    apiKey: 'AIzaSyD_Hc9aY_TP1hucLJIH-mQnVWQz4RCm9sU',
+    appId: '1:813547703892:ios:c82e863d1a085b4969e7c1',
+    messagingSenderId: '813547703892',
+    projectId: 'full-day-comunnity-hub',
+    storageBucket: 'full-day-comunnity-hub.firebasestorage.app',
+    iosClientId: '813547703892-jarda190nh3pdgh26mgf05k9h6h5a4bs.apps.googleusercontent.com',
+    iosBundleId: 'com.example.fullDayCommunityNode',
   );
 }

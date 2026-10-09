@@ -41,14 +41,12 @@ lib/core/firebase/community_firebase_options.dart
 
 Ese archivo no debe ser reemplazado al configurar el Firebase personal.
 
-La integración Community ya está configurada para Web, que es la plataforma
-del workshop y del deploy en Hosting. Para ejecutar Community en Android o iOS,
-el speaker debe registrar adicionalmente en el proyecto del Hub las apps con
-los identificadores reales del Node y añadir sus opciones al mismo archivo:
+La integración Community ya está configurada para Web y iOS. Para ejecutarla
+en Android, el speaker debe registrar adicionalmente en el proyecto del Hub la
+app con el identificador real del Node y añadir sus opciones al mismo archivo:
 
 ```text
 Android: com.example.full_day_community_node
-iOS:     com.example.fullDayCommunityNode
 ```
 
 ## Requisitos

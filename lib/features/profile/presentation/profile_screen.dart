@@ -22,17 +22,21 @@ class ProfileScreen extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         final profile = snapshot.data;
-        return ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            ProfileHeader(profile: profile),
-            const SizedBox(height: 16),
-            ProfileForm(
-              userId: repository.userId,
-              profile: profile,
-              onSave: repository.saveProfile,
-            ),
-          ],
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              ProfileHeader(profile: profile),
+              const SizedBox(height: 16),
+              ProfileForm(
+                userId: repository.userId,
+                profile: profile,
+                onSave: repository.saveProfile,
+              ),
+            ],
+          ),
         );
       },
     );
