@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "887735322879",
+    "project_id": "full-day-community-node",
+    "storage_bucket": "full-day-community-node.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:887735322879:android:5a75e9dd45e6131528a4ca",
+        "android_client_info": {
+          "package_name": "com.example.full_day_community_node"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "887735322879-tm3cb4rldkvufdek31081p3q3h2ng7qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlrmZQ9z7RD6caJA07ayGrefUIewzXr04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "887735322879-tm3cb4rldkvufdek31081p3q3h2ng7qa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

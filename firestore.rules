@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function validText(value, maxSize, isRequired) {
+      return value is string
+        && value.size() <= maxSize
+        && (!isRequired || value.size() > 0);
+    }
+
+    function validProfile() {
+      return request.resource.data.keys().hasAll([
+          'uid', 'name', 'role', 'community', 'bio', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'uid', 'name', 'role', 'community', 'bio', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && validText(request.resource.data.name, 80, true)
+        && validText(request.resource.data.role, 80, true)
+        && validText(request.resource.data.community, 80, true)
+        && validText(request.resource.data.bio, 240, false)
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    match /profiles/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && validProfile();
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'name', 'role', 'community', 'bio', 'updatedAt'
+        ])
+        && validProfile();
+      allow delete: if false;
+    }
+  }
+}
