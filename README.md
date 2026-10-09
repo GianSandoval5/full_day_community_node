@@ -102,6 +102,38 @@ seguirá apuntando al Hub.
 - No se usa `allow read, write: if true`.
 - Firebase config no equivale a un secreto ni reemplaza las reglas.
 
+## Despliegues Firebase personales
+
+Ejecuta estos comandos desde `full_day_community_node` y reemplaza
+`TU_PROJECT_ID` por el ID de tu proyecto Firebase personal. Nunca uses aquí el
+ID del Community Hub.
+
+Solo reglas:
+
+```bash
+firebase deploy --only firestore:rules --project TU_PROJECT_ID
+```
+
+Solo índices:
+
+```bash
+firebase deploy --only firestore:indexes --project TU_PROJECT_ID
+```
+
+Reglas e índices juntos:
+
+```bash
+firebase deploy --only firestore --project TU_PROJECT_ID
+```
+
+Hosting clásico es **opcional**. No lo necesitas para participar si ejecutas
+el Node localmente con `flutter run -d chrome`. Para publicar una URL propia:
+
+```bash
+flutter build web --release
+firebase deploy --only hosting --project TU_PROJECT_ID
+```
+
 ## Calidad
 
 ```bash
@@ -111,7 +143,7 @@ flutter test
 flutter build web
 ```
 
-## Hosting
+## Hosting opcional
 
 Consulta [Firebase Hosting clásico](docs/firebase-hosting.md). No se usa App
 Hosting ni se requiere Blaze.

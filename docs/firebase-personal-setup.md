@@ -39,13 +39,20 @@ lib/core/firebase/community_firebase_options.dart
 Ese archivo pertenece al Hub del evento y debe seguir siendo común para todos
 los asistentes.
 
-## Reglas personales
+## Reglas e índices personales
 
-Antes de publicar reglas comprueba el proyecto activo:
+Reemplaza `TU_PROJECT_ID` por el ID de tu proyecto Firebase personal. Usar
+`--project` evita desplegar accidentalmente en el Community Hub.
 
 ```bash
-firebase use
-firebase deploy --only firestore:rules
+firebase deploy --only firestore:rules --project TU_PROJECT_ID
+firebase deploy --only firestore:indexes --project TU_PROJECT_ID
+```
+
+También puedes desplegar reglas e índices juntos:
+
+```bash
+firebase deploy --only firestore --project TU_PROJECT_ID
 ```
 
 Las reglas de este repositorio permiten a cada sesión acceder únicamente a

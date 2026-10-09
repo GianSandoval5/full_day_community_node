@@ -1,6 +1,8 @@
 # Firebase Hosting clásico
 
-Cada asistente desplegará su propia aplicación Web en su proyecto personal.
+Cada asistente puede desplegar opcionalmente su aplicación Web en su proyecto
+personal. Para participar en el workshop basta con ejecutarla localmente usando
+`flutter run -d chrome`.
 
 ## Compilar
 
@@ -8,24 +10,13 @@ Cada asistente desplegará su propia aplicación Web en su proyecto personal.
 flutter build web
 ```
 
-## Revisar el proyecto activo
-
-```bash
-firebase use
-```
-
-Si no hay uno seleccionado:
-
-```bash
-firebase use --add
-```
-
-Selecciona tu proyecto personal, nunca el Community Hub.
-
 ## Desplegar
 
+Reemplaza `TU_PROJECT_ID` por el ID de tu proyecto personal, nunca por el ID
+del Community Hub.
+
 ```bash
-firebase deploy --only hosting
+firebase deploy --only hosting --project TU_PROJECT_ID
 ```
 
 `firebase.json` ya utiliza `build/web` y una rewrite SPA hacia `index.html`.
